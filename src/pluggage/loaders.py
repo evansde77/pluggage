@@ -2,7 +2,8 @@
 """
 loaders
 
-Util methods to load things on the fly
+Util methods to load things on the fly, optionally type checking them
+if needed.
 
 """
 
@@ -39,6 +40,37 @@ def parse_module_class_name(module_dot_class):
     return split_name
 
 
+def load_object(plugin_name):
+    """
+    _load_object_
+
+    Given a module.submodule.thing style string,
+    load thing and return it.
+    Assumes that the last element is an attr in the
+    module denoted by the previous elements
+
+    :param plugin_name: string, name of plugin of form module.submod.thing
+
+    :returns: Imported reference to thing.
+
+    """
+    modname, objname = parse_module_class_name(plugin_name)
+
+    try:
+        modref = importlib.import_module(modname)
+    except ImportError as ex:
+        msg = "Error Importing Module: {0}\n".format(modname)
+        msg += str(ex)
+        raise LoaderError(description=msg, plugin=plugin_name)
+    objref = getattr(modref, objname, None)
+    if objref is None:
+        msg = "Object {0} is not defined in Module {1}\n".format(
+            objname, modname)
+        msg += "Unable to load plugin"
+        raise LoaderError(description=msg, plugin=plugin_name)
+    return objref
+
+
 def load_plugin(plugin_name, type_check=None):
     """
     _load_plugin_
@@ -57,25 +89,11 @@ def load_plugin(plugin_name, type_check=None):
     :returns: Class Reference for the plugin
 
     """
-
-    modname, classname = parse_module_class_name(plugin_name)
-
-    try:
-        modref = importlib.import_module(modname)
-    except ImportError as ex:
-        msg = "Error Importing Module: {0}\n".format(modname)
-        msg += str(ex)
-        raise LoaderError(description=msg, plugin=plugin_name)
-    classref = getattr(modref, classname, None)
-    if classref is None:
-        msg = "Class {0} is not defined in Module {1}\n".format(
-            classname, modname)
-        msg += "Unable to instantiate plugin"
-        raise LoaderError(description=msg, plugin=plugin_name)
+    classref = load_object(plugin_name)
     if type_check is not None:
         if not issubclass(classref, type_check):
-            msg = "Class {0} in module {1} is not a {2} subclass:\n".format(
-                classname, modname, type_check.__name__
+            msg = "Plugin in {0} is not a {1} subclass:\n".format(
+                plugin_name, type_check.__name__
             )
             raise LoaderError(description=msg, plugin=plugin_name)
     return classref
@@ -94,19 +112,7 @@ def load_plugin_function(plugin_name):
     :returns: Reference to function
 
     """
-    modname, funcname = parse_module_class_name(plugin_name)
-    try:
-        modref = importlib.import_module(modname)
-    except ImportError as ex:
-        msg = "Error Importing Module: {0}\n".format(modname)
-        msg += str(ex)
-        raise LoaderError(description=msg, plugin=plugin_name)
-    funcref = getattr(modref, funcname, None)
-    if funcref is None:
-        msg = "Function {0} is not defined in Module {1}\n".format(
-            funcname, modname)
-        msg += "Unable to instantiate plugin"
-        raise LoaderError(description=msg, plugin=plugin_name)
+    funcref = load_object(plugin_name)
     if not callable(funcref):
         msg = "Function Plugin {0} is not callable".format(plugin_name)
         raise LoaderError(description=msg, plugin=plugin_name)
