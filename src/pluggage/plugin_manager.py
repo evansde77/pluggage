@@ -11,9 +11,11 @@ objects on the fly.
 from .loaders import load_plugin, load_plugin_function
 
 
-class DynamicFactory(dict):
+class PluginManager(dict):
     """
-    _DynamicFactory_
+    _PluginManager_
+
+
 
     """
     def __init__(self, register_functions=None, register_classes=None):
@@ -39,7 +41,7 @@ class DynamicFactory(dict):
         if name in self:
             raise RuntimeError("plugin {0} already registered".format(name))
         self._functions.append(name)
-        super(DynamicFactory, self).__setitem__(name, plugin)
+        super(PluginManager, self).__setitem__(name, plugin)
         return
 
     def register_class(self, name, plugin):
