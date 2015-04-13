@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-_pluggage_ 
+_pluggage_
 
 Plugin and factory registry utils
 
