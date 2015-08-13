@@ -95,25 +95,6 @@ def load_plugin(plugin_name, type_check=None):
             msg = "Plugin in {0} is not a {1} subclass:\n".format(
                 plugin_name, type_check.__name__
             )
-            raise LoaderError(description=msg, plugin=plugin_name)
+            raise LoaderError(msg, plugin=plugin_name)
     return classref
 
-
-def load_plugin_function(plugin_name):
-    """
-    _load_plugin_function_
-
-    Like load_plugin, but the returned object is expected to be
-    a callable instead of a class
-
-    :param plugin_name: String defining plugin in form
-       module1.module2.functionName
-
-    :returns: Reference to function
-
-    """
-    funcref = load_object(plugin_name)
-    if not callable(funcref):
-        msg = "Function Plugin {0} is not callable".format(plugin_name)
-        raise LoaderError(description=msg, plugin=plugin_name)
-    return funcref

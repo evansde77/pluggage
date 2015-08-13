@@ -7,12 +7,14 @@ unittest coverage for pluggae.loaders module
 Note: requires that test/fixtures is on pythonpath
 
 """
+import types
 import unittest
 
 from pluggage.errors import LoaderError
 from pluggage.loaders import (
     parse_module_class_name,
-    load_object
+    load_object,
+    load_plugin
 )
 
 
@@ -54,9 +56,45 @@ class LoadersTest(unittest.TestCase):
         self.failUnless(ex.message.startswith("Plugin name is not a string"))
 
     def test_load_object(self):
-        """test calls to load_object method"""
-        load_object('test.fixtures.loader_fixtures.some_function')
-        load_object('test.fixtures.loader_fixtures.SomeClass')
+        """test calls to load_object function"""
+        # succesful loads
+        func_obj = load_object('test.fixtures.loader_fixtures.some_function')
+        self.failUnless(isinstance(func_obj, types.FunctionType))
+        cls_obj = load_object('test.fixtures.loader_fixtures.SomeClass')
+        self.failUnless(isinstance(cls_obj, types.TypeType))
+        l_obj = load_object('test.fixtures.loader_fixtures.some_lambda')
+        self.failUnless(isinstance(l_obj, types.LambdaType))
+        cls_obj2 = load_object('test.fixtures.loader_fixtures.TheConfuser')
+        self.failUnless(isinstance(cls_obj2, types.TypeType))
+
+        # failures
+        # bad module
+        self.assertRaises(LoaderError, load_object, 'herp.derp.womp.some_function')
+        # good module, bad object
+        self.assertRaises(LoaderError, load_object, 'test.fixtures.loader_fixtures.herp_derp_womp')
+
+    def test_load_plugin(self):
+        """test calls to load_plugin"""
+
+        cls_obj = load_plugin(
+            'test.fixtures.loader_fixtures.SomeClass'
+        )
+        self.failUnless(isinstance(cls_obj, types.TypeType))
+
+        load_plugin(
+            'test.fixtures.loader_fixtures.SomeClass',
+            type_check=(object,)
+            )
+        class BadSubclass(object):
+            pass
+
+        with self.assertRaises(LoaderError) as ecm:
+            load_plugin(
+                'test.fixtures.loader_fixtures.SomeClass',
+                type_check=BadSubclass
+                )
+        self.failUnless('BadSubclass' in ecm.exception.message)
+
 
 if __name__ == '__main__':
     unittest.main()
