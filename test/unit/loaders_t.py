@@ -53,7 +53,7 @@ class LoadersTest(unittest.TestCase):
         with self.assertRaises(LoaderError) as ecm:
             parse_module_class_name({"not": "a string"})
         ex = ecm.exception
-        self.failUnless(ex.message.startswith("Plugin name is not a string"))
+        self.failUnless(str(ex).startswith("Plugin name is not a string"))
 
     def test_load_object(self):
         """test calls to load_object function"""
@@ -93,7 +93,7 @@ class LoadersTest(unittest.TestCase):
                 'test.fixtures.loader_fixtures.SomeClass',
                 type_check=BadSubclass
                 )
-        self.failUnless('BadSubclass' in ecm.exception.message)
+        self.failUnless('BadSubclass' in str(ecm.exception))
 
 
 if __name__ == '__main__':

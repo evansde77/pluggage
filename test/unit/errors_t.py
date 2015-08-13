@@ -20,7 +20,7 @@ class ErrorsTests(unittest.TestCase):
         """test attributes etc of loader error"""
         msg = "failed to load X"
         error = LoaderError(msg, plugin="womp")
-        self.assertEqual(error.message, msg)
+        self.assertEqual(str(error), msg)
         self.failUnless(isinstance(error, PluggageError))
         self.assertEqual(error.plugin, "womp")
 
