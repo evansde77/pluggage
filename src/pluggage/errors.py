@@ -6,6 +6,7 @@ Exception classes for the package
 
 """
 
+
 class PluggageError(Exception):
     """
     base class for package errors
@@ -13,10 +14,13 @@ class PluggageError(Exception):
     """
     pass
 
+
 class LoaderError(PluggageError):
     """
     LoaderError
 
     Indicates a failure to dynamically load a plugin
     """
-    pass
+    def __init__(self, message, plugin=None):
+        super(LoaderError, self).__init__(message)
+        self.plugin = plugin

@@ -27,16 +27,16 @@ def parse_module_class_name(module_dot_class):
     except IndexError:
         # string not contanining enough dots
         msg = "Couldn't split mod.class name: {0}".format(module_dot_class)
-        raise LoaderError(description=msg, plugin=module_dot_class)
+        raise LoaderError(msg, plugin=module_dot_class)
     except AttributeError:
         msg = "Plugin name is not a string: {0}".format(module_dot_class)
-        raise LoaderError(description=msg, plugin=module_dot_class)
+        raise LoaderError(msg, plugin=module_dot_class)
     if len(split_name) != 2:
         msg = (
             "Expected two elements of mod.class string in {0}"
             " which resulted in {1}"
             ).format(module_dot_class, split_name)
-        raise LoaderError(description=msg, plugin=module_dot_class)
+        raise LoaderError(msg, plugin=module_dot_class)
     return split_name
 
 
@@ -61,13 +61,13 @@ def load_object(plugin_name):
     except ImportError as ex:
         msg = "Error Importing Module: {0}\n".format(modname)
         msg += str(ex)
-        raise LoaderError(description=msg, plugin=plugin_name)
+        raise LoaderError(msg, plugin=plugin_name)
     objref = getattr(modref, objname, None)
     if objref is None:
         msg = "Object {0} is not defined in Module {1}\n".format(
             objname, modname)
         msg += "Unable to load plugin"
-        raise LoaderError(description=msg, plugin=plugin_name)
+        raise LoaderError(msg, plugin=plugin_name)
     return objref
 
 
