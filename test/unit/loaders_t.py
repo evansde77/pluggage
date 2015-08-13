@@ -61,11 +61,11 @@ class LoadersTest(unittest.TestCase):
         func_obj = load_object('test.fixtures.loader_fixtures.some_function')
         self.failUnless(isinstance(func_obj, types.FunctionType))
         cls_obj = load_object('test.fixtures.loader_fixtures.SomeClass')
-        self.failUnless(isinstance(cls_obj, types.TypeType))
+        self.failUnless(isinstance(cls_obj, type))
         l_obj = load_object('test.fixtures.loader_fixtures.some_lambda')
         self.failUnless(isinstance(l_obj, types.LambdaType))
         cls_obj2 = load_object('test.fixtures.loader_fixtures.TheConfuser')
-        self.failUnless(isinstance(cls_obj2, types.TypeType))
+        self.failUnless(isinstance(cls_obj2, type))
 
         # failures
         # bad module
@@ -79,7 +79,7 @@ class LoadersTest(unittest.TestCase):
         cls_obj = load_plugin(
             'test.fixtures.loader_fixtures.SomeClass'
         )
-        self.failUnless(isinstance(cls_obj, types.TypeType))
+        self.failUnless(isinstance(cls_obj, type))
 
         load_plugin(
             'test.fixtures.loader_fixtures.SomeClass',
