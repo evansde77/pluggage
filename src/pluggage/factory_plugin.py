@@ -6,11 +6,12 @@ Plugin base class that can be inherited to register
 a class with a factory
 
 """
+import six
 
 from .registry import get_factory
 from .registry import PluggageMeta
 
-
+@six.add_metaclass(PluggageMeta)
 class PluggagePlugin(object):
     """
     _PluggagePlugin_
@@ -35,7 +36,6 @@ class PluggagePlugin(object):
     some_class_instance = f('SomeClass')
 
     """
-    __metaclass__ = PluggageMeta
     PLUGGAGE_FACTORY_NAME = 'abstract'
     PLUGGAGE_OBJECT_NAME = None
 
