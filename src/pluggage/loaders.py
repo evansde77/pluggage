@@ -97,4 +97,3 @@ def load_plugin(plugin_name, type_check=None):
             )
             raise LoaderError(msg, plugin=plugin_name)
     return classref
-

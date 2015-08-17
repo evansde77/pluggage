@@ -25,11 +25,21 @@ class Plugins(dict):
         self.update(plugins)
 
     def __getitem__(self, key):
+        """
+        Implement [key] access to load the
+        plugin object and return it
+        """
         pname = super(Plugins, self).__getitem__(self, key)
         obj_ref = load_object(pname)
         return obj_ref
 
     def get(self, key, default=None):
+        """
+        _get_
+
+        Implement get call to return a plugin or
+        default if it doesnt exist
+        """
         if key not in self:
             return default
         return self[key]
