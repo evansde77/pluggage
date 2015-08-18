@@ -14,14 +14,17 @@ and either return the object or optionally call it.
 
 
 .. code-block:: python
-from pluggage.plugins import Plugins 
-loader = Plugins()
-
-func_ref = loader['some_module.some_submodule.some_function'] 
-cls_ref = loader['some_module.some_submodule.SomeClass'] 
-
-func_result = loader('some_module.some_submodule.some_function', *func_args, **func_kwargs)
-someclass_instance = loader('some_module.some_submodule.SomeClass', *ctor_args, **ctor_kwargs)
+ 
+ from pluggage.plugins import Plugins 
+ loader = Plugins()
+  
+ # load references to objects
+ func_ref = loader['some_module.some_submodule.some_function'] 
+ cls_ref = loader['some_module.some_submodule.SomeClass'] 
+ 
+ # call the objects and get the results
+ func_result = loader('some_module.some_submodule.some_function', *func_args, **func_kwargs)
+ someclass_instance = loader('some_module.some_submodule.SomeClass', *ctor_args, **ctor_kwargs)
 
 
 Heavyweight Plugins
@@ -44,21 +47,21 @@ To register a class with a factory, inherit from the PluggagePlugin class and se
 
 .. code-block:: python
 
-from pluggage.factory_plugin import PluggagePlugin
+ from pluggage.factory_plugin import PluggagePlugin
 
-class SomeClass(PluggagePlugin):
-    """
-    sample plugin
-    """
-    PLUGGAGE_FACTORY_NAME = 'my_factory'
-    def __init__(self, value):
-        self.value = value
-    def __call__(self):
-        print(value)
+ class SomeClass(PluggagePlugin):
+     """
+     sample plugin
+     """
+     PLUGGAGE_FACTORY_NAME = 'my_factory'
+     def __init__(self, value):
+         self.value = value
+     def __call__(self):
+         print(value)
         
-factory = get_factory('my_factory')
-some_class_instance = factory('SomeClass', 'abc')
-some_class_instance()  
+ factory = get_factory('my_factory')
+ some_class_instance = factory('SomeClass', 'abc')
+ some_class_instance()  # prints 'abc'
 
 
 
