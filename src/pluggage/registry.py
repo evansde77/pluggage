@@ -5,6 +5,8 @@ _registry_
 Plugin class registry utils
 
 """
+import importlib
+
 from .errors import FactoryError
 
 
@@ -65,7 +67,7 @@ class Registry(object):
         return cls(*args, **kwargs)
 
 
-def get_factory(factory_name, throw_on_nonexist=False):
+def get_factory(factory_name, throw_on_nonexist=False, load_modules=None):
     """
     get an instance of the Registry object for the named
     factory. Note that this will create a new
@@ -75,10 +77,16 @@ def get_factory(factory_name, throw_on_nonexist=False):
     :param factory_name: Name of the factory to get plugins for
     :param throw_on_nonexist: If no plugins exist for the factory,
         raise an exception
+    :param load_modules: List of module names to import to trigger
+        plugin registration
 
     :returns: Instance of Registry set up to use the given factory
         name
     """
+    if load_modules is not None:
+        for module_name in load_modules:
+            importlib.import_module(module_name)
+
     if (factory_name not in Registry._REGISTRY) and throw_on_nonexist:
         msg = "Factory name {} not found in registry".format(factory_name)
         raise FactoryError(msg, factory=factory_name)

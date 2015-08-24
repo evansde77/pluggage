@@ -11,14 +11,6 @@ from pluggage.registry import get_factory
 from pluggage.errors import FactoryError
 
 
-def setUpModule():
-    """
-    ensure that the fixtures model is imported
-    so that the plugins register
-    """
-    import test.fixtures.sample_plugins
-
-
 class TestFactory(unittest.TestCase):
     """
     test fixture plugins access via factory
@@ -28,7 +20,10 @@ class TestFactory(unittest.TestCase):
         test loading and calling the fixture plugins
         via the get_factory API
         """
-        factory = get_factory('unittest')
+        factory = get_factory(
+            'unittest',
+            load_modules=['test.fixtures.sample_plugins']
+        )
         self.failUnless('UnittestPlugin1' in factory.registry)
         self.failUnless('UnittestPlugin2' in factory.registry)
         self.failUnless('UnittestPlugin3' in factory.registry)
