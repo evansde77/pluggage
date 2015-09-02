@@ -7,7 +7,7 @@ Test using the factory with the fixtures plugin definitions
 import mock
 import unittest
 
-from pluggage.registry import get_factory
+from pluggage.registry import get_factory, init_factory
 from pluggage.errors import FactoryError
 
 
@@ -58,6 +58,15 @@ class TestFactory(unittest.TestCase):
 
         with self.assertRaises(FactoryError):
             get_factory('this_doesnt_exist', True)
+
+    def test_init_factory(self):
+        """test call to init_factory"""
+        factory = init_factory(
+            'unittest'
+        )
+        self.failUnless('UnittestPlugin1' in factory.registry)
+        self.failUnless('UnittestPlugin2' in factory.registry)
+        self.failUnless('UnittestPlugin3' in factory.registry)
 
 
 if __name__ == '__main__':

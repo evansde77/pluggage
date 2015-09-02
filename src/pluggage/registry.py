@@ -5,6 +5,7 @@ _registry_
 Plugin class registry utils
 
 """
+import pkg_resources
 import importlib
 
 from .errors import FactoryError
@@ -91,6 +92,24 @@ def get_factory(factory_name, throw_on_nonexist=False, load_modules=None):
         msg = "Factory name {} not found in registry".format(factory_name)
         raise FactoryError(msg, factory=factory_name)
     return Registry(factory_name)
+
+
+def init_factory(factory_name, throw_on_nonexist=False, load_modules=None):
+    """
+    Similar to get_factory but uses the pluggage_modules
+    entry points to load plugin modules registered by other packages.
+    Call this from a main routine to initialise a factory
+    with pluggage modules entry points defined in setuptools
+
+    Arguments are same as for get_factory
+
+    :returns: Instance of Registry set up to use the given factory
+        name
+
+    """
+    for entry_point in pkg_resources.iter_entry_points(group='pluggage_modules'):
+        entry_point.load()
+    return get_factory(factory_name, throw_on_nonexist=False, load_modules=None)
 
 
 class PluggageMeta(type):

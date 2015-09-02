@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='pluggage',
       version='0.0',
@@ -10,4 +10,8 @@ setup(name='pluggage',
       url='https://pluggage.readthedocs.org/en/latest/',
       packages=['pluggage'],
       package_dir={'pluggage': 'src/pluggage'},
+      entry_points = { 
+        'pluggage_modules': [
+         ]
+       }
      )
