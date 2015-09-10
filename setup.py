@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='pluggage',
-      version='0.0',
+      version='0.0.1',
       description='Plugin, dynamic loading and factory utility library ',
       author='Dave Evans',
       author_email='evansde77.github@gmail.com',
