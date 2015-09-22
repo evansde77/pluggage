@@ -10,6 +10,7 @@ API
 """
 
 from .loaders import load_object
+from .errors import LoaderError
 
 
 class Plugins(dict):
@@ -22,6 +23,7 @@ class Plugins(dict):
 
     """
     def __init__(self, **plugins):
+        super(Plugins, self).__init__()
         self.update(plugins)
 
     def __getitem__(self, key):
@@ -29,7 +31,12 @@ class Plugins(dict):
         Implement [key] access to load the
         plugin object and return it
         """
-        obj_ref = load_object(key)
+        if key in self:
+            return super(Plugins, self).__getitem__(key)
+        try:
+            obj_ref = load_object(key)
+        except LoaderError:
+            raise KeyError(key)
         self[key] = obj_ref
         return obj_ref
 
@@ -40,10 +47,9 @@ class Plugins(dict):
         Implement get call to return a plugin or
         default if it doesnt exist
         """
-        try:
-            return self[key]
-        except ImportError:
+        if key not in self:
             return default
+        return self[key]
 
     def __call__(self, name, *args, **kwargs):
         """
