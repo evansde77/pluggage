@@ -29,8 +29,8 @@ class Plugins(dict):
         Implement [key] access to load the
         plugin object and return it
         """
-        pname = super(Plugins, self).__getitem__(self, key)
-        obj_ref = load_object(pname)
+        obj_ref = load_object(key)
+        self[key] = obj_ref
         return obj_ref
 
     def get(self, key, default=None):
@@ -40,9 +40,10 @@ class Plugins(dict):
         Implement get call to return a plugin or
         default if it doesnt exist
         """
-        if key not in self:
+        try:
+            return self[key]
+        except ImportError:
             return default
-        return self[key]
 
     def __call__(self, name, *args, **kwargs):
         """
